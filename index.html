@@ -15,11 +15,7 @@
     list-style: none;
     text-decoration: none;
     box-sizing: border-box;
-  }
-  .box {
-    width: 200px;
-    height: 200px;
-    background: #f60;
+    overflow: hidden;
   }
 </style>
 
@@ -30,14 +26,15 @@
 </html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.7.1/pixi.min.js"></script>
 <script type="text/javascript">
-  var app = new PIXI.Application(800, 600, {
+  var app = new PIXI.Application(1920, 1080, {
     backgroundColor: 0x0,
     antialias: true,
   });
   document.body.appendChild(app.view);
 
   //Get the texture for rope.
-  var starTexture = PIXI.Texture.fromImage('https://i0.hdslb.com/bfs/archive/6c42c40ed54f4bb5ea491894aff693878afa6580.png');
+  // var starTexture = PIXI.Texture.fromImage('https://i0.hdslb.com/bfs/archive/6c42c40ed54f4bb5ea491894aff693878afa6580.png');
+  var starTexture = PIXI.Texture.fromImage('bg.ico');
 
   var starAmount = 1000;
   var cameraZ = 0;
