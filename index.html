@@ -5,108 +5,639 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="shortcut icon" href="bg.ico" type="image/x-icon">
   <title>阿七</title>
 </head>
+
 <style>
+  @import url('https://fonts.googleapis.com/css?family=Indie+Flower');
+  @import url('https://fonts.googleapis.com/css?family=Amatic+SC');
+
   body {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    text-decoration: none;
+    font-family: 'Indie Flower', cursive !important;
+    background: #FDE3A7;
+    /*CAPE HONEY*/
+    margin: 0px;
+    padding: 0px;
+  }
+
+  ::selection {
+    background: transparent;
+  }
+
+  h4 {
+    font-size: 26px;
+    line-height: 1px;
+    font-family: 'Amatic SC', cursive !important;
+  }
+
+  .color1 {
+    color: #1BBC9B
+  }
+
+  /*MOUNTAIN MEADOW*/
+  .color2 {
+    color: #C0392B
+      /*TALL POPPY*/
+  }
+
+  .margin {
+    margin-bottom: 30px;
+  }
+
+  .card {
+    color: #013243;
+    /*SHERPA BLUE*/
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 400px;
+    background: #e0e1dc;
+    transform-style: preserve-3d;
+    transform: translate(-50%, -50%) perspective(2000px);
+    box-shadow: inset 300px 0 50px rgba(0, 0, 0, .5), 20px 0 60px rgba(0, 0, 0, .5);
+    transition: 1s;
+  }
+
+  .card:hover {
+    transform: translate(-50%, -50%) perspective(2000px) rotate(15deg) scale(1.2);
+    box-shadow: inset 20px 0 50px rgba(0, 0, 0, .5), 0 10px 100px rgba(0, 0, 0, .5);
+  }
+
+  .card:before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: #BAC1BA;
+    transform-origin: bottom;
+    transform: skewX(-45deg);
+  }
+
+  .card:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -5px;
+    width: 5px;
+    height: 100%;
+    background: #92A29C;
+    transform-origin: left;
+    transform: skewY(-45deg);
+  }
+
+  .card .imgBox {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-origin: left;
+    transition: .7s;
+  }
+
+  .card .bark {
+    position: absolute;
+    background: #e0e1dc;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: .7s;
+  }
+
+  .card .imgBox img {
+    min-width: 250px;
+    max-height: 400px;
+  }
+
+  .card:hover .imgBox {
+    transform: rotateY(-135deg);
+  }
+
+  .card:hover .bark {
+    opacity: 1;
+    transition: .6s;
+    box-shadow: 300px 200px 100px rgba(0, 0, 0, .4) inset;
+  }
+
+  .card .details {
+    position: absolute;
+    top: 0;
+    left: 0;
     box-sizing: border-box;
-    overflow: hidden;
+    padding: 0 0 0 10px;
+    z-index: -1;
+  }
+
+  .card .details p {
+    font-size: 15px;
+    line-height: 5px;
+    transform: rotate(-10deg);
+    padding: 0 0 0 20px;
+  }
+
+  .card .details h4 {
+    text-align: center;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  @keyframes tail {
+    6.6666666667% {
+      transform: rotate(0);
+    }
+
+    10% {
+      transform: rotate(10deg);
+    }
+
+    16.6666666667% {
+      transform: rotate(-5deg);
+    }
+
+    20% {
+      transform: rotate(30deg);
+    }
+
+    26.6666666667% {
+      transform: rotate(-2deg);
+    }
+
+    46.6666666667% {
+      transform: rotate(10deg);
+    }
+
+    53.3333333333% {
+      transform: rotate(-5deg);
+    }
+
+    56.6666666667% {
+      transform: rotate(10deg);
+    }
+  }
+
+  @keyframes body {
+    6.6666666667% {
+      transform: scaleY(1);
+    }
+
+    10% {
+      transform: scaleY(1.15);
+    }
+
+    16.6666666667% {
+      transform: scaleY(1);
+    }
+
+    20% {
+      transform: scaleY(1.25);
+    }
+
+    26.6666666667% {
+      transform: scaleY(1);
+    }
+
+    46.6666666667% {
+      transform: scaleY(1.15);
+    }
+
+    53.3333333333% {
+      transform: scaleY(1);
+    }
+
+    56.6666666667% {
+      transform: scaleY(1.15);
+    }
+  }
+
+  @keyframes left-whisker {
+    6.6666666667% {
+      transform: rotate(0);
+    }
+
+    10% {
+      transform: rotate(0deg);
+    }
+
+    16.6666666667% {
+      transform: rotate(-5deg);
+    }
+
+    20% {
+      transform: rotate(0deg);
+    }
+
+    26.6666666667% {
+      transform: rotate(0deg);
+    }
+
+    46.6666666667% {
+      transform: rotate(10deg);
+    }
+
+    53.3333333333% {
+      transform: rotate(-5deg);
+    }
+
+    56.6666666667% {
+      transform: rotate(10deg);
+    }
+  }
+
+  @keyframes right-whisker {
+    6.6666666667% {
+      transform: rotate(180deg);
+    }
+
+    10% {
+      transform: rotate(190deg);
+    }
+
+    16.6666666667% {
+      transform: rotate(180deg);
+    }
+
+    20% {
+      transform: rotate(175deg);
+    }
+
+    26.6666666667% {
+      transform: rotate(190deg);
+    }
+
+    46.6666666667% {
+      transform: rotate(180deg);
+    }
+
+    53.3333333333% {
+      transform: rotate(185deg);
+    }
+
+    56.6666666667% {
+      transform: rotate(175deg);
+    }
+  }
+
+  @keyframes left-ear {
+    0% {
+      transform: rotate(-20deg);
+    }
+
+    6.6666666667% {
+      transform: rotate(-6deg);
+    }
+
+    13.3333333333% {
+      transform: rotate(-15deg);
+    }
+
+    26.6666666667% {
+      transform: rotate(-15deg);
+    }
+
+    33.3333333333% {
+      transform: rotate(-30deg);
+    }
+
+    40% {
+      transform: rotate(-30deg);
+    }
+
+    46.6666666667% {
+      transform: rotate(0deg);
+    }
+
+    53.3333333333% {
+      transform: rotate(0deg);
+    }
+
+    60% {
+      transform: rotate(-15deg);
+    }
+
+    80% {
+      transform: rotate(-15deg);
+    }
+
+    93.3333333333% {
+      transform: rotate(-6deg);
+    }
+
+    100% {
+      transform: rotateZ(-6deg);
+    }
+  }
+
+  @keyframes right-ear {
+    0% {
+      transform: rotateZ(-16deg);
+    }
+
+    6.6666666667% {
+      transform: rotateZ(-16deg);
+    }
+
+    13.3333333333% {
+      transform: rotateZ(-19deg);
+    }
+
+    26.6666666667% {
+      transform: rotateZ(-19deg);
+    }
+
+    33.3333333333% {
+      transform: rotateZ(-30deg);
+    }
+
+    36.6666666667% {
+      transform: rotateZ(-19deg);
+    }
+
+    37.3333333333% {
+      transform: rotateZ(-30deg);
+    }
+
+    38% {
+      transform: rotateZ(-19deg);
+    }
+
+    40% {
+      transform: rotateZ(-19deg);
+    }
+
+    40.6666666667% {
+      transform: rotateZ(-30deg);
+    }
+
+    41.3333333333% {
+      transform: rotateZ(-19deg);
+    }
+
+    46.6666666667% {
+      transform: rotateZ(-9deg);
+    }
+
+    53.3333333333% {
+      transform: rotateZ(-9deg);
+    }
+
+    60% {
+      transform: rotateZ(-19deg);
+    }
+
+    60.6666666667% {
+      transform: rotateZ(-30deg);
+    }
+
+    61.3333333333% {
+      transform: rotateZ(-19deg);
+    }
+
+    62.6666666667% {
+      transform: rotateZ(-19deg);
+    }
+
+    63.3333333333% {
+      transform: rotateZ(-30deg);
+    }
+
+    64% {
+      transform: rotateZ(-19deg);
+    }
+
+    80% {
+      transform: rotateZ(-19deg);
+    }
+
+    93.3333333333% {
+      transform: rotateZ(-16deg);
+    }
+
+    100% {
+      transform: rotateZ(-16deg);
+    }
+  }
+
+  body {
+    background-color: #abe7db;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .main {
+    height: 250px;
+    width: 372px;
+    position: relative;
+  }
+
+  .main .stand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%);
+    height: 20px;
+    width: 200px;
+    border-radius: 20px;
+    background-color: #fd6e72;
+    z-index: 2;
+  }
+
+  .main .stand::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translate(-50%);
+    height: 10px;
+    width: 50px;
+    border-radius: 20px;
+    background-color: #fdf9de;
+    box-shadow: 0 10px 0 #fdf9de, 0 20px 0 #fdf9de, 0 30px 0 #fdf9de, 0 40px 0 #fdf9de, 0 50px 0 #fdf9de, 0 60px 0 #fdf9de, 0 70px 0 #fdf9de, 0 80px 0 #fdf9de, 0 90px 0 #fdf9de, 0 100px 0 #fdf9de, 0 110px 0 #fdf9de, 0 120px 0 #fdf9de, 0 130px 0 #fdf9de, 0 140px 0 #fdf9de, 0 150px 0 #fdf9de, 0 160px 0 #fdf9de, 0 170px 0 #fdf9de;
+  }
+
+  .main .cat {
+    width: 110px;
+    height: 50px;
+    position: absolute;
+    top: calc(50% - 50px);
+    right: 130px;
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+  }
+
+  .main .cat .body {
+    width: 110px;
+    height: 50px;
+    background-color: #745260;
+    position: absolute;
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+    animation: body 12s none infinite;
+  }
+
+  .main .cat .head {
+    content: "";
+    width: 70px;
+    height: 35px;
+    background-color: #745260;
+    position: absolute;
+    top: calc(50% - 10px);
+    left: -40px;
+    border-top-left-radius: 80px;
+    border-top-right-radius: 80px;
+  }
+
+  .tail-container {
+    position: absolute;
+    right: 0;
+    bottom: -13px;
+    z-index: 3;
+  }
+
+  .tail {
+    position: absolute;
+    height: 30px;
+    width: 14px;
+    bottom: -10px;
+    right: 0;
+    border-bottom-right-radius: 5px;
+    background: #745260;
+    z-index: 0;
+  }
+
+  .tail>.tail {
+    animation: tail 12s none infinite;
+    height: 100%;
+    width: 14px;
+    transform-origin: left;
+    border-bottom-left-radius: 20px 20px;
+    border-bottom-right-radius: 20px 20px;
+    border-top-right-radius: 40px;
+  }
+
+  .ear {
+    position: absolute;
+    left: 4px;
+    top: -4px;
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 20px solid #745260;
+    transform: rotate(-30deg);
+    animation: left-ear 12s both infinite;
+  }
+
+  .ear+.ear {
+    animation: right-ear 12s both infinite;
+    top: -12px;
+    left: 30px;
+  }
+
+  .nose {
+    position: absolute;
+    bottom: 10px;
+    left: -10px;
+    background-color: #fd6e72;
+    height: 5px;
+    width: 5px;
+    border-radius: 50%;
+  }
+
+  .whisker-container {
+    position: absolute;
+    bottom: 5px;
+    left: -36px;
+    width: 20px;
+    height: 10px;
+    transform-origin: right;
+    animation: left-whisker 12s both infinite;
+  }
+
+  .whisker-container:nth-child(2) {
+    left: -20px;
+    bottom: 12px;
+    transform-origin: right;
+    transform: rotate(180deg);
+    animation: right-whisker 12s both infinite;
+  }
+
+  .whisker {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    border: 1px solid #fdf9de;
+    transform-origin: 100% 0;
+    transform: rotate(10deg);
+  }
+
+  .whisker:last-child {
+    top: 0;
+    transform: rotate(-20deg);
   }
 </style>
 
 <body>
-  
+  <div class="card">
+    <div class="imgBox">
+      <div class="bark"></div>
+      <img src="http://www.jq22.com/tp/c38bc111-9228-47e5-a1ee-4e5bc7b32972.png">
+    </div>
+    <div class="details">
+      <div class="main">
+        <span class="stand"></span>
+        <div class="cat">
+          <div class="body"></div>
+          <div class="head">
+            <div class="ear"></div>
+            <div class="ear"></div>
+          </div>
+          <div class="face">
+            <div class="nose"></div>
+            <div class="whisker-container">
+              <div class="whisker"></div>
+              <div class="whisker"></div>
+            </div>
+            <div class="whisker-container">
+              <div class="whisker"></div>
+              <div class="whisker"></div>
+            </div>
+          </div>
+          <div class="tail-container">
+            <div class="tail">
+              <div class="tail">
+                <div class="tail">
+                  <div class="tail">
+                    <div class="tail">
+                      <div class="tail">
+                        <div class="tail"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <h4 class="color1">You're not a Fossil! (YET)</h2>
+        <h4 class="color2 margin">(HAPPY BIRTHDAY)</h3>
+          <p>Dear Dad,</p>
+          <p>Let's see.. .</p>
+          <p>You’re never around, you</p>
+          <p>hate the music I’m into, you</p>
+          <p>practically despise the movies I</p>
+          <p>like, and yet somehow you still</p>
+          <p>manage to be the best dad every year.</p>
+          <p>How do you do that :)</p>
+          <p class="text-right">Happy Birthday, papa!</p>
+          <p class="text-right">Sarah</p> -->
+    </div>
+  </div>
 </body>
 
 </html>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.7.1/pixi.min.js"></script>
-<script type="text/javascript">
-
-  const Width = document.documentElement.clientWidth;
-  const Height = document.documentElement.clientHeight;
-
-  var app = new PIXI.Application(Width, Height, {
-    backgroundColor: 0x0,
-    antialias: true, // 抗锯齿：默认为false，平滑字体和图片的边缘，目前只有Chrome浏览器支持
-    transparent: false // 透明度：默认为false，设置画布背景的透明与否；
-  });
-  document.body.appendChild(app.view);
-
-  //Get the texture for rope.
-  var starTexture = PIXI.Texture.fromImage('bg.ico');
-
-  var starAmount = 1000;
-  var cameraZ = 0;
-  var fov = 20;
-  var baseSpeed = 0.025;
-  var speed = 0;
-  var warpSpeed = 0;
-  var starStretch = 5;
-  var starBaseSize = 0.05;
-
-
-  //Create the stars
-  var stars = [];
-  for (var i = 0; i < starAmount; i++) {
-    var star = {
-      sprite: new PIXI.Sprite(starTexture),
-      z: 0,
-      x: 0,
-      y: 0
-    };
-    star.sprite.anchor.x = 0.5;
-    star.sprite.anchor.y = 0.7;
-    randomizeStar(star, true);
-    app.stage.addChild(star.sprite);
-    stars.push(star);
-  }
-
-  function randomizeStar(star, initial) {
-    star.z = initial ? Math.random() * 2000 : cameraZ + Math.random() * 1000 + 2000;
-
-    //Calculate star positions with radial random coordinate so no star hits the camera.
-    var deg = Math.random() * Math.PI * 2;
-    var distance = Math.random() * 50 + 1;
-    star.x = Math.cos(deg) * distance;
-    star.y = Math.sin(deg) * distance;
-  }
-
-  //Change flight speed every 5 seconds
-  setInterval(function () {
-    warpSpeed = warpSpeed > 0 ? 0 : 1;
-  }, 5000)
-
-  // Listen for animate update
-  app.ticker.add(function (delta) {
-    //Simple easing. This should be changed to proper easing function when used for real.
-    speed += (warpSpeed - speed) / 20;
-    cameraZ += delta * 10 * (speed + baseSpeed);
-    for (var i = 0; i < starAmount; i++) {
-      var star = stars[i];
-      if (star.z < cameraZ)
-        randomizeStar(star);
-
-      //Map star 3d position to 2d with really simple projection
-      var z = star.z - cameraZ;
-      star.sprite.x = star.x * (fov / z) * app.renderer.screen.width + app.renderer.screen.width / 2;
-      star.sprite.y = star.y * (fov / z) * app.renderer.screen.width + app.renderer.screen.height / 2;
-
-      //Calculate star scale & rotation.
-      var dxCenter = star.sprite.x - app.renderer.screen.width / 2;
-      var dyCenter = star.sprite.y - app.renderer.screen.height / 2;
-      var distanceCenter = Math.sqrt(dxCenter * dxCenter + dyCenter + dyCenter);
-      var distanceScale = Math.max(0, (2000 - z) / 2000);
-      star.sprite.scale.x = distanceScale * starBaseSize;
-      //Star is looking towards center so that y axis is towards center.
-      //Scale the star depending on how fast we are moving, what the stretchfactor is and depending on how far away it is from the center.
-      star.sprite.scale.y = distanceScale * starBaseSize + distanceScale * speed * starStretch * distanceCenter / app.renderer.screen.width;
-      star.sprite.rotation = Math.atan2(dyCenter, dxCenter) + Math.PI / 2;
-
-    }
-  });
-</script>
