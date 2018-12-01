@@ -643,14 +643,15 @@
     </div>
   </div>
 </body>
-
 </html>
 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
-  var touch = document.getElementsByClassName("card")[0];
-  console.log(touch); 
-  touch.addEventListener("touchstart",function(e){
-    console.log(e);
+  var touch = $("card");
+  touch.on("touchstart",function(){
     touch.css({ 'transform' : 'translate(-50%, -50%) perspective(2000px) rotate(15deg) scale(1.2)', 'box-shadow' : 'inset 20px 0 50px rgba(0, 0, 0, .5), 0 10px 100px rgba(0, 0, 0, .5)' })
+  })
+  touch.on("touchend",function(){
+    touch.css({ 'transform' : '', 'box-shadow' : '' })
   })
 </script>
