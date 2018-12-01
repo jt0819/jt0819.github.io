@@ -18,6 +18,7 @@
     /*CAPE HONEY*/
     margin: 0px;
     padding: 0px;
+    overflow: hidden;
   }
 
   ::selection {
@@ -589,6 +590,21 @@
     </div>
     <div class="details">
       <div class="main">
+        <div style="position: relative;">
+          <h2 class="color1">You're not a Fossil! (YET)</h2>
+            <h3 class="color2 margin">(HAPPY BIRTHDAY)</h3>
+              <p>Dear Dad,</p>
+              <p>Let's see...</p>
+              <p>You’re never around, you</p>
+              <p>hate the music I’m into, you</p>
+              <p>practically despise the movies I</p>
+              <p>like, and yet somehow you still</p>
+              <p>manage to be the best dad every year.</p>
+              <p>How do you do that :)</p>
+              <p>Happy Birthday, papa!</p>
+              <p>Sarah</p>
+        </div>
+
         <span class="stand"></span>
         <div class="cat">
           <div class="body"></div>
@@ -624,20 +640,17 @@
           </div>
         </div>
       </div>
-      <!-- <h4 class="color1">You're not a Fossil! (YET)</h2>
-        <h4 class="color2 margin">(HAPPY BIRTHDAY)</h3>
-          <p>Dear Dad,</p>
-          <p>Let's see.. .</p>
-          <p>You’re never around, you</p>
-          <p>hate the music I’m into, you</p>
-          <p>practically despise the movies I</p>
-          <p>like, and yet somehow you still</p>
-          <p>manage to be the best dad every year.</p>
-          <p>How do you do that :)</p>
-          <p class="text-right">Happy Birthday, papa!</p>
-          <p class="text-right">Sarah</p> -->
     </div>
   </div>
 </body>
 
 </html>
+
+<script type="text/javascript">
+  var touch = document.getElementsByClassName("card")[0];
+  console.log(touch); 
+  touch.addEventListener("touchstart",function(e){
+    console.log(e);
+    touch.css({ 'transform' : 'translate(-50%, -50%) perspective(2000px) rotate(15deg) scale(1.2)', 'box-shadow' : 'inset 20px 0 50px rgba(0, 0, 0, .5), 0 10px 100px rgba(0, 0, 0, .5)' })
+  })
+</script>
