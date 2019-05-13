@@ -1,196 +1,43 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Three练手</title>
-    <script src="Tween.js"></script>
-</head>
-<style>
-    body {
-        margin: 0;
-    }
-
-    canvas {
-        width: 100%;
-        height: 100%;
-        vertical-align: top;
-    }
-</style>
-<body>
-<script type="text/javascript" src="tree.min.js"></script>
-<script type="text/javascript" src="Stats.js"></script>
-<script type="text/javascript" src="Tween.js"></script>
-
-<script>
-    let scene, camera, light, cube, renderer, stats;
-    let width = window.innerWidth,
-        height = window.innerHeight;
-    // 初始化 场景
-    const initScene = () => {
-        scene = new THREE.Scene();
-        scene.fog = new THREE.Fog('#40a9ff', 0.15, 2000);
-        scene.autoUpdate = true;
-    };
-    // 初始化 照相机
-    const initCamera = () => {
-        camera = new THREE.PerspectiveCamera(100, width / height, 0.1, 10000)
-        /**
-         *  camera.position：相机所在的位置，默认为（0，0，0）
-         *  camera.lookAt：相机焦点方向，默认为Z轴负半轴方向
-         *  camera.up：坐标轴向上方向，默认（0，1，0）。PS：要设置在camera.lookAt前才有效
-         **/
-        camera.position.x = 0;
-        camera.position.y = 0;
-        camera.position.z = 1000;
-        camera.up.x = 0;
-        camera.up.y = 0;
-        camera.up.z = 0;
-        camera.lookAt(0, 0, 0);
-
-    };
-    // 初始化 光源
-    const initLight = () => {
-        /**
-         *  平行光源
-         *  DirectionalLight( hex, intensity )
-         *  hex -- 光源颜色的RGB数值。
-         *  intensity -- 光源强度的数值。
-         **/
-        light = new THREE.DirectionalLight(0xffffff, 0.5);
-        light.position.set(100, 100, 200);
-        scene.add(light);
-    };
-    // 初始化 几何体
-    let sphere;
-    const initBall = () => {
-        var geometry = new THREE.TorusBufferGeometry( 100, 30, 160, 1000 );
-        var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-        sphere = new THREE.Mesh(geometry, material);
-        scene.add(sphere);
-    }
-    const initGeometry = () => {
-        var geometry = new THREE.Geometry();
-        geometry.vertices.push(
-            new THREE.Vector3(-500, 0, 0),
-            new THREE.Vector3(500, 0, 0)
-        );
-        for (let i = 0; i <= 20; i++) {
-
-            var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: 0xffec3d, opacity: 0.2}));
-            line.position.y = (i * 50) - 500;
-            scene.add(line);
-
-            cube = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: 0xf5222d, opacity: 0.2}));
-            cube.position.x = (i * 50) - 500;
-            cube.rotation.z = 90 * Math.PI / 180;
-            scene.add(cube);
+    <title>three.js css3d - panorama</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            cursor: pointer;
+            overflow: hidden;
         }
-    };
-    const initXLine = () => {
-        var geometry = new THREE.Geometry();
-        var a = new THREE.Vector3(-100, 0, 0), b = new THREE.Vector3(100, 0, 0);
-        var color_a = new THREE.Color(0xf60), color_b = new THREE.Color(0x0085d0);
-        geometry.vertices.push(
-            a,
-            b
-        );
-        geometry.colors.push(
-            color_a,
-            color_b
-        );
-        var material = new THREE.LineBasicMaterial({vertexColors: true});
-        var line = new THREE.Line(geometry, material);
-        scene.add(line);
-    };
-    const initYLine = () => {
-        var geometry = new THREE.Geometry();
-        var a = new THREE.Vector3(0, 0, -100), b = new THREE.Vector3(0, 0, 100);
-        var color_a = new THREE.Color(0xfa541c), color_b = new THREE.Color(0xa0d911);
-        geometry.vertices.push(
-            a,
-            b
-        );
-        geometry.colors.push(
-            color_a,
-            color_b
-        );
-        var material = new THREE.LineBasicMaterial({vertexColors: true});
-        var line = new THREE.Line(geometry, material);
-        scene.add(line);
-    };
-    const initZLine = () => {
-        var geometry = new THREE.Geometry();
-        var a = new THREE.Vector3(0, -100, 0), b = new THREE.Vector3(0, 100, 0);
-        var color_a = new THREE.Color(0xeb2f96), color_b = new THREE.Color(0x2f54eb);
-        geometry.vertices.push(
-            a,
-            b
-        );
-        geometry.colors.push(
-            color_a,
-            color_b
-        );
-        var material = new THREE.LineBasicMaterial({vertexColors: true});
-        var line = new THREE.Line(geometry, material);
-        scene.add(line);
-    };
-    // 初始化 渲染器
-    const initRender = () => {
-        renderer = new THREE.WebGLRenderer({
-            // antialias: true // 开启抗锯齿
-        });
-        renderer.setSize(width, height);
-        renderer.setClearColor(0xeeeeee, .08); // 设置清除的颜色和透明度
-        document.body.appendChild(renderer.domElement);
-
-        // 调试器
-        stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.left = '0px';
-        stats.domElement.style.top = '0px';
-        document.body.appendChild(stats.domElement);
-    };
-    function initTween() {
-        new TWEEN.Tween(sphere.position)
-            .to({x: -400, y: 500}, 5000)
-            .repeat(Infinity).start();
-    }
-
-    // 动画
-    const render = function () {
-        requestAnimationFrame(render);
-        // cube.rotation.z += 0.05;
-        // cube.rotation.y += 0.01;
-        // camera.position.x += 1;
-        // camera.position.z += 0.1;
-        // camera.position.z += 0.1;
-        // camera.position.x += 0.5;
-        sphere.rotation.z += 0.08;
-        sphere.rotation.y += 0.08;
-
-        renderer.render(scene, camera);
-        stats.update();
-        TWEEN.update();
-    };
-
-    const Start = () => {
-        initRender();
-        initCamera();
-        initScene();
-        initLight();
-        // initXLine();
-        // initYLine();
-        // initZLine();
-        // initGeometry();
-        initBall();
-        initTween();
-        renderer.clear();
-        render();
-    };
-    Start()
-</script>
+        .surface { width: 1026px; height: 1026px; background-size: cover; position: absolute; }
+        .surface .bg { position: absolute; width: 1026px; height: 1026px; }
+    </style>
+</head>
+<body>
+<div>
+    <div id="surface_0" class="surface">
+        <img class="bg" src="images/posx.jpg" alt="">
+    </div>
+    <div id="surface_1" class="surface">
+        <img class="bg" src="images/negx.jpg" alt="">
+    </div>
+    <div id="surface_2" class="surface">
+        <img class="bg" src="images/posy.jpg" alt="">
+    </div>
+    <div id="surface_3" class="surface">
+        <img class="bg" src="images/negy.jpg" alt="">
+    </div>
+    <div id="surface_4" class="surface">
+        <img class="bg" src="images/posz.jpg" alt="">
+    </div>
+    <div id="surface_5" class="surface">
+        <img class="bg" src="images/negz.jpg" alt="">
+    </div>
+</div>
+<script src="js/three.min.js"></script>
+<script src="js/CSS3DRenderer.min.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>
