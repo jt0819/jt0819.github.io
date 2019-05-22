@@ -5,6 +5,9 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
     <title>Three练手</title>
     <script src="Tween.js"></script>
 </head>
@@ -27,35 +30,45 @@
 <script type="text/javascript" src="OrbitControls.js"></script>
 
 <script>
-    let scene, camera, light, cube, renderer, stats;
+    let scene, camera, light, sphere, renderer, stats, test;
     let width = window.innerWidth,
         height = window.innerHeight;
+    // 计算出鼠标经过的3d空间中的对象
+    // Raycaster( origin, direction, near, far ) { }
+    // origin — 射线的起点向量。
+    // direction — 射线的方向向量，应该归一化。
+    // near — 所有返回的结果应该比 near 远。Near不能为负，默认值为0。
+    // far — 所有返回的结果应该比 far 近。Far 不能小于 near，默认值为无穷大。
+    let raycaster = new THREE.Raycaster(); // 对象从屏幕上的点击位置向场景中发射一束光线。
+    var mouse = new THREE.Vector2(); //将鼠标位置
     // 初始化 场景
-    const initScene = () => {
+    function initScene() {
         scene = new THREE.Scene();
-        scene.fog = new THREE.Fog('#f60', 0.3, 12000);
+        scene.fog = new THREE.Fog('#f60', 0.3, 5000);
         scene.autoUpdate = true;
-    };
+    }
+
     // 初始化 照相机
-    const initCamera = () => {
-        camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 10000);
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(75, width / height, 1, 4500);
         /**
          *  camera.position：相机所在的位置，默认为（0，0，0）
          *  camera.lookAt：相机焦点方向，默认为Z轴负半轴方向
          *  camera.up：坐标轴向上方向，默认（0，1，0）。PS：要设置在camera.lookAt前才有效
          **/
-        camera.position.x = 0;
-        camera.position.y = 0;
-        camera.position.z = 0;
+        // camera.position.x = 0;
+        // camera.position.y = 0;
+        // camera.position.z = 0;
         // camera.up.x = 0;
         // camera.up.y = 0;
         // camera.up.z = 0;
         // camera.lookAt(0, 10, 0);
-        // camera.target = new THREE.Vector3(0, 100, 0);
+        camera.target = new THREE.Vector3(0, 0, 0);
 
-    };
+    }
+
     // 初始化 光源
-    const initLight = () => {
+    function initLight() {
         /**
          *  平行光源
          *  DirectionalLight( hex, intensity )
@@ -69,94 +82,29 @@
         light = new THREE.PointLight(0x00FF00);
         light.position.set(0, 0, 300);
         scene.add(light);
-    };
+    }
+
     // 初始化 几何体
-    let sphere;
-    const initBall = () => {
-        // var geometry = new THREE.TorusBufferGeometry( 100, 30, 160, 1000 );
-        // var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-        /*var object = new THREE.AxesHelper(500);
-        scene.add(object);*/
-        var geometry = new THREE.SphereBufferGeometry(500, 60, 40);
+    let geometry, material;
+    function initBall() {
+        // var object = new THREE.AxesHelper(500);
+        // scene.add(object);
+        geometry = new THREE.SphereBufferGeometry(500, 500, 500);
         geometry.scale(-1, 1, 1);
-        var material = new THREE.MeshBasicMaterial({
-            map: new THREE.TextureLoader().load('test.jpg') //加载一整张纹理图片
+        material = new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('3.jpg') //加载一整张纹理图片
         });
-        // var geometry = new THREE.CylinderGeometry(1, 200, 500, 6);
-        // var material = new THREE.MeshBasicMaterial({color: 0x0085d0});
+        test = new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('1.jpg') //加载一整张纹理图片
+        });
         sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
     }
-    const initGeometry = () => {
-        var geometry = new THREE.Geometry();
-        geometry.vertices.push(
-            new THREE.Vector3(-500, 0, 0),
-            new THREE.Vector3(500, 0, 0)
-        );
-        for (let i = 0; i <= 20; i++) {
 
-            var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: 0xffec3d, opacity: 0.2}));
-            line.position.y = (i * 50) - 500;
-            scene.add(line);
-
-            cube = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: 0xf5222d, opacity: 0.2}));
-            cube.position.x = (i * 50) - 500;
-            cube.rotation.z = 90 * Math.PI / 180;
-            scene.add(cube);
-        }
-    };
-    const initXLine = () => {
-        var geometry = new THREE.Geometry();
-        var a = new THREE.Vector3(-100, 0, 0), b = new THREE.Vector3(100, 0, 0);
-        var color_a = new THREE.Color(0xf60), color_b = new THREE.Color(0x0085d0);
-        geometry.vertices.push(
-            a,
-            b
-        );
-        geometry.colors.push(
-            color_a,
-            color_b
-        );
-        var material = new THREE.LineBasicMaterial({vertexColors: true});
-        var line = new THREE.Line(geometry, material);
-        scene.add(line);
-    };
-    const initYLine = () => {
-        var geometry = new THREE.Geometry();
-        var a = new THREE.Vector3(0, 0, -100), b = new THREE.Vector3(0, 0, 100);
-        var color_a = new THREE.Color(0xfa541c), color_b = new THREE.Color(0xa0d911);
-        geometry.vertices.push(
-            a,
-            b
-        );
-        geometry.colors.push(
-            color_a,
-            color_b
-        );
-        var material = new THREE.LineBasicMaterial({vertexColors: true});
-        var line = new THREE.Line(geometry, material);
-        scene.add(line);
-    };
-    const initZLine = () => {
-        var geometry = new THREE.Geometry();
-        var a = new THREE.Vector3(0, -100, 0), b = new THREE.Vector3(0, 100, 0);
-        var color_a = new THREE.Color(0xeb2f96), color_b = new THREE.Color(0x2f54eb);
-        geometry.vertices.push(
-            a,
-            b
-        );
-        geometry.colors.push(
-            color_a,
-            color_b
-        );
-        var material = new THREE.LineBasicMaterial({vertexColors: true});
-        var line = new THREE.Line(geometry, material);
-        scene.add(line);
-    };
     // 初始化 渲染器
-    const initRender = () => {
+    function initRender() {
         renderer = new THREE.WebGLRenderer({
-            // antialias: true // 开启抗锯齿
+            antialias: true // 开启抗锯齿
         });
         renderer.setSize(width, height);
         renderer.setClearColor(0xeeeeee, .08); // 设置清除的颜色和透明度
@@ -177,25 +125,13 @@
     }
 
     // 动画
-    const render = function () {
+    function render() {
         animate.update();
         requestAnimationFrame(render);
-        // cube.rotation.z += 0.05;
-        // cube.rotation.y += 0.01;
-        // camera.position.x += 1;
-        // camera.position.z += 0.1;
-        // camera.position.z += 0.1;
-        // camera.position.x += 0.2;
-        // console.log(controls.fov);
-        // camera.fov += controls.fov;
-        // changeFov();
-        // sphere.rotation.z += controls.speed;
-        // sphere.rotation.y += controls.speed;
-        // sphere.rotation.z += controls.speed;
         renderer.render(scene, camera);
         stats.update();
         // TWEEN.update();
-    };
+    }
 
     let controls = new function () {
         this.speed = 0.001;
@@ -214,6 +150,71 @@
     function changeFov() {
         setCameraFov(controls.fov);
     }
+    let sprite;
+    function initSprite() {
+        var spriteMap = new THREE.TextureLoader().load('21.png');
+        var spriteMaterial = new THREE.SpriteMaterial({
+            map: spriteMap,
+            sizeAttenuation: false
+        });
+
+        sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(0.1, 0.1, 0.1);
+        sprite.position.set(-20, -200.5, -200.5);
+
+        scene.add(sprite);
+        return sprite
+        // sprite.visible = false
+    }
+
+    function onMouseMove( event ) {
+        event.preventDefault();
+        // 将鼠标位置归一化为设备坐标。x 和 y 方向的取值范围是 (-1 to +1)
+
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+
+
+        raycaster.setFromCamera( mouse, camera );   //射线捕捉
+        console.log(initSprite());
+        var intersects = raycaster.intersectObject(initSprite(), true);
+        console.log(intersects);
+        if ( intersects.length > 0) {
+            console.log(123);
+            sphere.material = test
+            sprite.visible = false
+            // camera.updateProjectionMatrix();
+            // renderer.render(scene, camera);
+            // scene.add(sphere);
+        }
+
+    }
+
+    window.addEventListener( 'mousedown', onMouseMove, false );
+
+    /*function box() {
+        event.preventDefault();
+        // 将鼠标位置归一化为设备坐标。x 和 y 方向的取值范围是 (-1 to +1)
+
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+
+        raycaster.setFromCamera( mouse, camera );   //射线捕捉
+        var intersects = raycaster.intersectObjects(initSprite());
+        console.log(intersects);
+        if ( intersects.length > 0) {
+            console.log(123);
+            test = new THREE.MeshBasicMaterial({
+                map: new THREE.TextureLoader().load('1.jpg') //加载一整张纹理图片
+            });
+            sphere = new THREE.Mesh(geometry, test);
+            // scene.add(sphere);
+        }
+        // sphere.material = test;
+        // sprite.visible = false
+    }*/
 
     //窗口变动触发的函数
     function onWindowResize() {
@@ -225,35 +226,38 @@
     }
 
     let animate;
+
+    /**
+    *   轨道控制
+    **/
     function initAnimate() {
         animate = new THREE.OrbitControls(camera, renderer.domElement);
-        animate.enableDamping = true;
         //动态阻尼系数 就是鼠标拖拽旋转灵敏度
-        animate.dampingFactor = 1.4;
+        animate.dampingFactor = 1.8;
         //是否可以缩放
         animate.enableZoom = true;
         //是否自动旋转
-        animate.autoRotate = false;
+        // animate.autoRotate = true;
+        // animate.autoRotateSpeed = 0.1;
         //设置相机距离原点的最远距离
-        animate.minDistance = 1;
+        animate.minDistance = 10;
         //设置相机距离原点的最远距离
-        animate.maxDistance = 160;
+        animate.maxDistance = 1000;
         //是否开启右键拖拽
         animate.enablePan = false;
     }
+
 
     const Start = () => {
         initRender();
         initCamera();
         initScene();
         initLight();
-        // initXLine();
-        // initYLine();
-        // initZLine();
-        // initGeometry();
         initBall();
         // initTween();
+        initSprite();
         initAnimate();
+        // box();
         renderer.clear();
         render();
         window.onresize = onWindowResize;
