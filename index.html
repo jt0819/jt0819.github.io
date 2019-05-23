@@ -27,6 +27,7 @@
 <script type="text/javascript" src="dat.gui.js"></script>
 <script type="text/javascript" src="Stats.js"></script>
 <script type="text/javascript" src="Tween.js"></script>
+<script type="text/javascript" src="text.js"></script>
 <script type="text/javascript" src="OrbitControls.js"></script>
 
 <script>
@@ -44,27 +45,25 @@
     // 初始化 场景
     function initScene() {
         scene = new THREE.Scene();
-        scene.fog = new THREE.Fog('#f60', 0.3, 5000);
+        scene.fog = new THREE.Fog('#fff', 0.3, 3600);
         scene.autoUpdate = true;
     }
 
     // 初始化 照相机
     function initCamera() {
-        camera = new THREE.PerspectiveCamera(75, width / height, 1, 4500);
+        camera = new THREE.PerspectiveCamera(75, width / height, 1, 1600);
+        camera.target = new THREE.Vector3(0, 0, 0);
         /**
          *  camera.position：相机所在的位置，默认为（0，0，0）
          *  camera.lookAt：相机焦点方向，默认为Z轴负半轴方向
          *  camera.up：坐标轴向上方向，默认（0，1，0）。PS：要设置在camera.lookAt前才有效
          **/
-        // camera.position.x = 0;
         // camera.position.y = 0;
         // camera.position.z = 0;
         // camera.up.x = 0;
         // camera.up.y = 0;
         // camera.up.z = 0;
-        // camera.lookAt(0, 10, 0);
-        camera.target = new THREE.Vector3(0, 0, 0);
-
+        // camera.lookAt(500, 500, 1);
     }
 
     // 初始化 光源
@@ -92,7 +91,7 @@
         geometry = new THREE.SphereBufferGeometry(500, 500, 500);
         geometry.scale(-1, 1, 1);
         material = new THREE.MeshBasicMaterial({
-            map: new THREE.TextureLoader().load('3.jpg') //加载一整张纹理图片
+            map: new THREE.TextureLoader().load('5.jpg') //加载一整张纹理图片
         });
         test = new THREE.MeshBasicMaterial({
             map: new THREE.TextureLoader().load('1.jpg') //加载一整张纹理图片
@@ -124,9 +123,19 @@
             .repeat(Infinity).start();
     }
 
+    let flag = true;
     // 动画
     function render() {
         animate.update();
+        if (flag) {
+            if (camera.position.x < 100) {
+                camera.position.x += 0.2;
+                animate.autoRotate = true;
+                animate.autoRotateSpeed = 0.2;
+            } else {
+                flag = false;
+            }
+        }
         requestAnimationFrame(render);
         renderer.render(scene, camera);
         stats.update();
@@ -152,19 +161,34 @@
     }
     let sprite;
     function initSprite() {
-        var spriteMap = new THREE.TextureLoader().load('21.png');
-        var spriteMaterial = new THREE.SpriteMaterial({
-            map: spriteMap,
-            sizeAttenuation: false
-        });
+        var geometry = new THREE.CylinderBufferGeometry( 5, 5, 20, 32 );
+        var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+        sprite = new THREE.Mesh( geometry, material );
+        sprite.position.set(-40, -100.5, -200.5);
+        scene.add( sprite );
 
-        sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(0.1, 0.1, 0.1);
-        sprite.position.set(-20, -200.5, -200.5);
 
-        scene.add(sprite);
+        // var spriteMap = new THREE.TextureLoader().load('21.png');
+        // spriteMap.needsUpdate = true;
+        // var spriteMaterial = new THREE.SpriteMaterial({
+        //     map: spriteMap,
+        //     sizeAttenuation: false
+        // });
+        //
+        // sprite = new THREE.Sprite(spriteMaterial);
+        // sprite.scale.set(0.3, 0.3, 1);
+        // sprite.position.set(-20, -200.5, -200.5);
+        //
+        // scene.add(sprite);
         return sprite
         // sprite.visible = false
+        // let spriteOrigin = makeTextSprite( "阿七测试点击啊啊啊啊");
+        // console.log(spriteOrigin);
+        // spriteOrigin.center = new THREE.Vector2(0, 0);
+        // scene.add( spriteOrigin );
+        // spriteOrigin.scale.set(1, 1, 1);
+        // spriteOrigin.position.set(-20, -250, -200);
+        // return spriteOrigin;
     }
 
     function onMouseMove( event ) {
@@ -174,15 +198,11 @@
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
-
-
         raycaster.setFromCamera( mouse, camera );   //射线捕捉
-        console.log(initSprite());
-        var intersects = raycaster.intersectObject(initSprite(), true);
-        console.log(intersects);
+        var intersects = raycaster.intersectObject(jiantou, true);
         if ( intersects.length > 0) {
-            console.log(123);
-            sphere.material = test
+            sphere.material = test;
+
             sprite.visible = false
             // camera.updateProjectionMatrix();
             // renderer.render(scene, camera);
@@ -191,7 +211,25 @@
 
     }
 
+    function onDocumentTouchDown(event) {
+        event.preventDefault();
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+        raycaster.setFromCamera( mouse, camera );   //射线捕捉
+        var intersects = raycaster.intersectObject(jiantou, true);
+        if ( intersects.length > 0) {
+            sphere.material = test;
+
+            sprite.visible = false
+            // camera.updateProjectionMatrix();
+            // renderer.render(scene, camera);
+            // scene.add(sphere);
+        }
+    }
+
     window.addEventListener( 'mousedown', onMouseMove, false );
+    window.addEventListener( 'touchstart', onDocumentTouchDown, false );
 
     /*function box() {
         event.preventDefault();
@@ -240,14 +278,14 @@
         // animate.autoRotate = true;
         // animate.autoRotateSpeed = 0.1;
         //设置相机距离原点的最远距离
-        animate.minDistance = 10;
+        animate.minDistance = 200;
         //设置相机距离原点的最远距离
         animate.maxDistance = 1000;
         //是否开启右键拖拽
         animate.enablePan = false;
     }
 
-
+        let jiantou;
     const Start = () => {
         initRender();
         initCamera();
@@ -255,7 +293,7 @@
         initLight();
         initBall();
         // initTween();
-        initSprite();
+        jiantou = initSprite();
         initAnimate();
         // box();
         renderer.clear();
