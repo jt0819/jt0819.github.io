@@ -62,7 +62,7 @@
          *  camera.lookAt：相机焦点方向，默认为Z轴负半轴方向
          *  camera.up：坐标轴向上方向，默认（0，1，0）。PS：要设置在camera.lookAt前才有效
          **/
-        // camera.position.y = 0;
+        camera.position.y = 560;
         // camera.position.z = 0;
         // camera.up.x = 0;
         // camera.up.y = 0;
@@ -129,9 +129,8 @@
      *   动画效果
      **/
     function initTween() {
-        new TWEEN.Tween(sphere.position)
-            .to({z: 666}, 5000)
-            .repeat(Infinity).start();
+        new TWEEN.Tween(camera.position)
+            .to({y: 0}, 2000).start();
     }
 
     let flag = true;
@@ -140,20 +139,13 @@
      **/
     function render() {
         animate.update();
-        if (flag) {
-            if (camera.position.x < 100) {
-                camera.position.x += 0.2;
-                animate.autoRotate = true;
-                animate.autoRotateSpeed = 0.2;
-            } else {
-                flag = false;
-            }
-        }
+        animate.autoRotate = controls.autoRotate;
+        animate.autoRotateSpeed = controls.autoRotateSpeed;
         a();
         requestAnimationFrame(render);
         renderer.render(scene, camera);
         stats.update();
-        // TWEEN.update();
+        TWEEN.update();
     }
     /**
      *   gui控制器
@@ -161,11 +153,15 @@
     let controls = new function () {
         this.speed = 0.001;
         this.fov = 45;
+        this.autoRotate = false;
+        this.autoRotateSpeed = 0.1;
     };
     const gui = new dat.GUI();
 
     // gui.add(controls, 'speed', 0, 0.5).name('旋转速度');
     // gui.add(controls, 'fov', 45, 75).name('视角大小');
+    gui.add(controls, 'autoRotate', true, false).name('自动旋转');
+    gui.add(controls, 'autoRotateSpeed', 0, 0.5).name('旋转速度');
 
     function setCameraFov(fov) {
         camera.fov = fov;
@@ -283,10 +279,10 @@
         //是否可以缩放
         animate.enableZoom = true;
         //是否自动旋转
-        // animate.autoRotate = true;
-        // animate.autoRotateSpeed = 0.1;
+        animate.autoRotate = controls.autoRotate;
+        animate.autoRotateSpeed = controls.autoRotateSpeed;
         //设置相机距离原点的最远距离
-        animate.minDistance = 200;
+        animate.minDistance = 100;
         //设置相机距离原点的最远距离
         animate.maxDistance = 1000;
         //是否开启右键拖拽
@@ -300,7 +296,7 @@
         initScene();
         initLight();
         initBall();
-        // initTween();
+        initTween();
         jiantou = initSprite();
         initAnimate();
         renderer.clear();
