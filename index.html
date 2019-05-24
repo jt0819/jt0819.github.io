@@ -34,6 +34,7 @@
     let scene, camera, light, sphere, renderer, stats, test;
     let width = window.innerWidth,
         height = window.innerHeight;
+    let camera_time = 0;
     // 计算出鼠标经过的3d空间中的对象
     // Raycaster( origin, direction, near, far ) { }
     // origin — 射线的起点向量。
@@ -42,14 +43,17 @@
     // far — 所有返回的结果应该比 far 近。Far 不能小于 near，默认值为无穷大。
     let raycaster = new THREE.Raycaster(); // 对象从屏幕上的点击位置向场景中发射一束光线。
     var mouse = new THREE.Vector2(); //将鼠标位置
-    // 初始化 场景
+    /**
+     *   初始化 场景
+     **/
     function initScene() {
         scene = new THREE.Scene();
-        scene.fog = new THREE.Fog('#fff', 0.3, 3600);
+        scene.fog = new THREE.Fog('#fff', 0.3, 5600);
         scene.autoUpdate = true;
     }
-
-    // 初始化 照相机
+    /**
+     *   初始化 照相机
+     **/
     function initCamera() {
         camera = new THREE.PerspectiveCamera(75, width / height, 1, 1600);
         camera.target = new THREE.Vector3(0, 0, 0);
@@ -65,8 +69,9 @@
         // camera.up.z = 0;
         // camera.lookAt(500, 500, 1);
     }
-
-    // 初始化 光源
+    /**
+     *   初始化 光源
+     **/
     function initLight() {
         /**
          *  平行光源
@@ -82,25 +87,28 @@
         light.position.set(0, 0, 300);
         scene.add(light);
     }
-
-    // 初始化 几何体
+    /**
+     *   初始化 几何体
+     **/
     let geometry, material;
     function initBall() {
+        // 辅助线
         // var object = new THREE.AxesHelper(500);
         // scene.add(object);
         geometry = new THREE.SphereBufferGeometry(500, 500, 500);
         geometry.scale(-1, 1, 1);
         material = new THREE.MeshBasicMaterial({
-            map: new THREE.TextureLoader().load('5.jpg') //加载一整张纹理图片
+            map: new THREE.TextureLoader().load('3.jpg') //加载第一张图片
         });
         test = new THREE.MeshBasicMaterial({
-            map: new THREE.TextureLoader().load('1.jpg') //加载一整张纹理图片
+            map: new THREE.TextureLoader().load('1.jpg') //加载第二张图片 待替换
         });
         sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
     }
-
-    // 初始化 渲染器
+    /**
+     *   初始化 渲染器
+     **/
     function initRender() {
         renderer = new THREE.WebGLRenderer({
             antialias: true // 开启抗锯齿
@@ -108,15 +116,18 @@
         renderer.setSize(width, height);
         renderer.setClearColor(0xeeeeee, .08); // 设置清除的颜色和透明度
         document.body.appendChild(renderer.domElement);
-
-        // 调试器
+        /**
+         *   初始化 调试器
+         **/
         stats = new Stats();
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.left = '0px';
         stats.domElement.style.top = '0px';
         document.body.appendChild(stats.domElement);
     };
-
+    /**
+     *   动画效果
+     **/
     function initTween() {
         new TWEEN.Tween(sphere.position)
             .to({z: 666}, 5000)
@@ -124,7 +135,9 @@
     }
 
     let flag = true;
-    // 动画
+    /**
+     *   render动画
+     **/
     function render() {
         animate.update();
         if (flag) {
@@ -136,12 +149,15 @@
                 flag = false;
             }
         }
+        a();
         requestAnimationFrame(render);
         renderer.render(scene, camera);
         stats.update();
         // TWEEN.update();
     }
-
+    /**
+     *   gui控制器
+     **/
     let controls = new function () {
         this.speed = 0.001;
         this.fov = 45;
@@ -159,9 +175,12 @@
     function changeFov() {
         setCameraFov(controls.fov);
     }
+    /**
+     *   初始化 精灵
+     **/
     let sprite;
     function initSprite() {
-        var geometry = new THREE.CylinderBufferGeometry( 5, 5, 20, 32 );
+        var geometry = new THREE.CylinderBufferGeometry( 10, 10, 40, 40 );
         var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
         sprite = new THREE.Mesh( geometry, material );
         sprite.position.set(-40, -100.5, -200.5);
@@ -191,6 +210,9 @@
         // return spriteOrigin;
     }
 
+    /**
+     *   鼠标点击事件
+     **/
     function onMouseMove( event ) {
         event.preventDefault();
         // 将鼠标位置归一化为设备坐标。x 和 y 方向的取值范围是 (-1 to +1)
@@ -201,16 +223,27 @@
         raycaster.setFromCamera( mouse, camera );   //射线捕捉
         var intersects = raycaster.intersectObject(jiantou, true);
         if ( intersects.length > 0) {
-            sphere.material = test;
-
-            sprite.visible = false
-            // camera.updateProjectionMatrix();
-            // renderer.render(scene, camera);
-            // scene.add(sphere);
+            camera_time = 1;
+            a();
         }
 
     }
-
+    function a() {
+        if (camera_time > 0 && camera_time < 50) {
+            camera.fov -= 1;
+            camera.updateProjectionMatrix();	//需要更新，不自动更新
+            camera_time++;
+            sprite.visible = false
+        } else if (camera_time === 50) {
+            camera_time = 0;
+            camera.fov= 75;
+            camera.updateProjectionMatrix();
+            sphere.material = test;
+        }
+    }
+    /**
+     *   移动端点击事件
+     **/
     function onDocumentTouchDown(event) {
         event.preventDefault();
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -219,42 +252,17 @@
         raycaster.setFromCamera( mouse, camera );   //射线捕捉
         var intersects = raycaster.intersectObject(jiantou, true);
         if ( intersects.length > 0) {
-            sphere.material = test;
-
-            sprite.visible = false
-            // camera.updateProjectionMatrix();
-            // renderer.render(scene, camera);
-            // scene.add(sphere);
+            camera_time = 1;
+            a();
         }
     }
 
     window.addEventListener( 'mousedown', onMouseMove, false );
     window.addEventListener( 'touchstart', onDocumentTouchDown, false );
 
-    /*function box() {
-        event.preventDefault();
-        // 将鼠标位置归一化为设备坐标。x 和 y 方向的取值范围是 (-1 to +1)
-
-        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-
-        raycaster.setFromCamera( mouse, camera );   //射线捕捉
-        var intersects = raycaster.intersectObjects(initSprite());
-        console.log(intersects);
-        if ( intersects.length > 0) {
-            console.log(123);
-            test = new THREE.MeshBasicMaterial({
-                map: new THREE.TextureLoader().load('1.jpg') //加载一整张纹理图片
-            });
-            sphere = new THREE.Mesh(geometry, test);
-            // scene.add(sphere);
-        }
-        // sphere.material = test;
-        // sprite.visible = false
-    }*/
-
-    //窗口变动触发的函数
+    /**
+     *   窗口变动触发的函数
+     **/
     function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -263,11 +271,11 @@
 
     }
 
-    let animate;
 
     /**
     *   轨道控制
     **/
+    let animate;
     function initAnimate() {
         animate = new THREE.OrbitControls(camera, renderer.domElement);
         //动态阻尼系数 就是鼠标拖拽旋转灵敏度
@@ -285,7 +293,7 @@
         animate.enablePan = false;
     }
 
-        let jiantou;
+    let jiantou;
     const Start = () => {
         initRender();
         initCamera();
@@ -295,7 +303,6 @@
         // initTween();
         jiantou = initSprite();
         initAnimate();
-        // box();
         renderer.clear();
         render();
         window.onresize = onWindowResize;
