@@ -31,6 +31,7 @@
         bottom: 20px;
         right: 20px;
         z-index: 10000;
+        display: none;
     }
 
     #exitFullScreen {
@@ -56,6 +57,14 @@
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 
 <script>
+    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        $("#fullScreen").hide();
+        $("#exitFullScreen").hide();
+
+    } else {
+        $("#fullScreen").show();
+    }
+
 
     //fullScreen()和exitScreen()有多种实现方式，此处只使用了其中一种
     //全屏
@@ -85,11 +94,11 @@
         }
     }
 
-    $("#fullScreen").on("click",function(){
+    $("#fullScreen").on("click", function () {
         fullScreen();
     });
     //退出全屏
-    $("#exitFullScreen").on("click",function(){
+    $("#exitFullScreen").on("click", function () {
         exitFullscreen();
     });
 
@@ -342,7 +351,6 @@
      *   移动端点击事件
      **/
     function onDocumentTouchDown(event) {
-        event.preventDefault();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
@@ -393,7 +401,8 @@
     function initAnimate() {
         animate = new THREE.OrbitControls(camera, renderer.domElement);
         //动态阻尼系数 就是鼠标拖拽旋转灵敏度
-        // animate.dampingFactor = 1.8;
+        animate.enableDamping = true;
+        animate.dampingFactor = 0.34;
         //是否可以缩放
         animate.enableZoom = true;
         //是否自动旋转
