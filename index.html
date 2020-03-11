@@ -39,10 +39,14 @@
     let father = $('#v5btn');
     console.log(father);
     father.click(() => {
-        let dom = $('#copyright');
-        console.log(dom);
-        dom.hide();
-    }).delay(2000);
+        setTimeout(() => {
+            let dom = $('#copyright');
+            console.log(dom);
+            dom.hide();
+        }, 2000)
+
+    });
+
 
 
 
