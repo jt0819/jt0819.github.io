@@ -23,7 +23,7 @@
 </head>
 
 <style>
-    #v5frame #copyright a{
+    #v5frame #copyright a {
         display: none;
     }
 </style>
@@ -38,9 +38,14 @@
 <script>
     let father = $('#v5btn');
     console.log(father);
-    let dom = $('#copyright');
-    console.log(dom);
-    dom.hide();
+    father.click(() => {
+        let dom = $('#copyright');
+        console.log(dom);
+        dom.hide();
+    }).delay(2000);
+
+
+
     let test = $('#input');
     setTimeout(() => {
         test.focus();
