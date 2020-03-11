@@ -22,6 +22,12 @@
     <title>Document</title>
 </head>
 
+<style>
+    #v5frame #copyright a{
+        display: none;
+    }
+</style>
+
 <body>
     <div>阿七测试</div>
     <input type="text" id="input" autofocus="autofocus">
@@ -30,6 +36,11 @@
 </html>
 <script src="jquery.js"></script>
 <script>
+    let father = $('#v5btn');
+    console.log(father);
+    let dom = $('#copyright');
+    console.log(dom);
+    dom.hide();
     let test = $('#input');
     setTimeout(() => {
         test.focus();
