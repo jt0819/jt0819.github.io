@@ -36,25 +36,9 @@
 </html>
 <script src="jquery.js"></script>
 <script>
-    let father = $('#v5btn');
-    console.log(father);
-    father.click(() => {
-        setTimeout(() => {
-            let dom = $('#copyright');
-            console.log(dom);
-            dom.hide();
-        }, 2000)
-
-    });
-
-
-
-
-    let test = $('#input');
-    setTimeout(() => {
-        test.focus();
-    }, 500)
-    function a() {
+    window.onload = function () {
+        let _iframe = document.getElementById('v5btn').contentWindow;
+        let _div = _iframe.document.getElementById('copyright');
+        _div.hide();
     }
-
 </script>
